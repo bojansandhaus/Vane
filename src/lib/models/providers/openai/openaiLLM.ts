@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import OpenAI from 'openai';
 import BaseLLM from '../../base/llm';
 import { zodTextFormat, zodResponseFormat } from 'openai/helpers/zod';
@@ -36,6 +37,9 @@ class OpenAILLM extends BaseLLM<OpenAIConfig> {
     this.openAIClient = new OpenAI({
       apiKey: this.config.apiKey,
       baseURL: this.config.baseURL || 'https://api.openai.com/v1',
+      defaultHeaders: this.config.baseURL?.includes('opencode.ai')
+        ? { 'x-opencode-session': `vane-${randomUUID()}` }
+        : undefined,
     });
   }
 

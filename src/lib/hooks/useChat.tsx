@@ -287,8 +287,12 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [fileIds, setFileIds] = useState<string[]>([]);
 
-  const [sources, setSources] = useState<string[]>(['web']);
-  const [optimizationMode, setOptimizationMode] = useState('speed');
+  const [sources, setSources] = useState<string[]>([
+    'web',
+    'discussions',
+    'academic',
+  ]);
+  const [optimizationMode, setOptimizationMode] = useState('balanced');
 
   const [isMessagesLoaded, setIsMessagesLoaded] = useState(false);
 
