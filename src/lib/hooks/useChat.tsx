@@ -429,7 +429,23 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
           method: 'POST',
         });
 
-        if (!res.body) throw new Error('No response body');
+        if (res.status === 404) {
+          setMessages((currentMessages) =>
+            currentMessages.map((message) =>
+              message.backendId === lastMsg.backendId
+                ? { ...message, status: 'error' }
+                : message,
+            ),
+          );
+          setLoading(false);
+          setResearchEnded(true);
+          isReconnectingRef.current = false;
+          return;
+        }
+
+        if (!res.ok || !res.body) {
+          throw new Error(`Reconnect failed: ${res.status}`);
+        }
 
         const reader = res.body?.getReader();
         const decoder = new TextDecoder('utf-8');

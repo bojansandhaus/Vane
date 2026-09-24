@@ -24,14 +24,19 @@ const Page = () => {
 
       const res = await fetch(`/api/chats`, {
         method: 'GET',
+        cache: 'no-store',
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
+      if (!res.ok) {
+        throw new Error(`Failed to load chats: ${res.status}`);
+      }
+
       const data = await res.json();
 
-      setChats(data.chats);
+      setChats(data.chats ?? []);
       setLoading(false);
     };
 

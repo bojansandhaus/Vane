@@ -2,6 +2,8 @@ import db from '@/lib/db';
 import { chats, messages } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 
+export const dynamic = 'force-dynamic';
+
 export const GET = async (
   req: Request,
   { params }: { params: Promise<{ id: string }> },
