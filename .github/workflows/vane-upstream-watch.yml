@@ -1,0 +1,67 @@
+name: Watch Vane upstream
+
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  UPSTREAM_REPOSITORY: ItzCrazyKns/Vane
+
+jobs:
+  check-upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for upstream commits
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          upstream_sha="$(git ls-remote "https://github.com/${UPSTREAM_REPOSITORY}.git" refs/heads/master | cut -f1)"
+          fork_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/master" --jq '.object.sha')"
+          echo "upstream_sha=$upstream_sha" >> "$GITHUB_OUTPUT"
+          echo "fork_sha=$fork_sha" >> "$GITHUB_OUTPUT"
+          if [ "$upstream_sha" != "$fork_sha" ]; then
+            echo 'needs_review=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'needs_review=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create one review issue for the upstream update
+        id: issue
+        if: steps.check.outputs.needs_review == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPSTREAM_SHA: ${{ steps.check.outputs.upstream_sha }}
+          FORK_SHA: ${{ steps.check.outputs.fork_sha }}
+        run: |
+          set -euo pipefail
+          title="Upstream Vane update requires review: ${UPSTREAM_SHA:0:12}"
+          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq 'length')"
+          if [ "$existing" = "0" ]; then
+            url="https://github.com/${UPSTREAM_REPOSITORY}/compare/${FORK_SHA}...${UPSTREAM_SHA}"
+            gh issue create --title "$title" --body "Upstream Vane changed and needs review. Upstream commit: ${UPSTREAM_SHA}. Fork base commit: ${FORK_SHA}. Compare changes: ${url}."
+            echo 'created=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'created=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Notify Telegram about actionable upstream work
+        if: steps.issue.outputs.created == 'true'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          UPSTREAM_SHA: ${{ steps.check.outputs.upstream_sha }}
+          FORK_SHA: ${{ steps.check.outputs.fork_sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          text="Vane upstream changed and needs review. Upstream: ${UPSTREAM_SHA:0:12}. Fork base: ${FORK_SHA:0:12}. https://github.com/${REPOSITORY}/issues"
+          curl --fail-with-body -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${text}" >/dev/null
