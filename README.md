@@ -1,14 +1,16 @@
 # Vane 🔍
 
-[![GitHub Repo stars](https://img.shields.io/github/stars/ItzCrazyKns/Vane?style=social)](https://github.com/ItzCrazyKns/Vane/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/ItzCrazyKns/Vane?style=social)](https://github.com/ItzCrazyKns/Vane/network/members)
-[![GitHub watchers](https://img.shields.io/github/watchers/ItzCrazyKns/Vane?style=social)](https://github.com/ItzCrazyKns/Vane/watchers)
-[![Docker Pulls](https://img.shields.io/docker/pulls/itzcrazykns1337/vane?color=blue)](https://hub.docker.com/r/itzcrazykns1337/vane)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/ItzCrazyKns/Vane/blob/master/LICENSE)
-[![GitHub last commit](https://img.shields.io/github/last-commit/ItzCrazyKns/Vane?color=green)](https://github.com/ItzCrazyKns/Vane/commits/master)
+[![GitHub Repo stars](https://img.shields.io/github/stars/bojansandhaus/Vane?style=social)](https://github.com/bojansandhaus/Vane)
+[![GitHub forks](https://img.shields.io/github/forks/bojansandhaus/Vane?style=social)](https://github.com/bojansandhaus/Vane/network/members)
+[![GitHub watchers](https://img.shields.io/github/watchers/bojansandhaus/Vane?style=social)](https://github.com/bojansandhaus/Vane)
+[![Upstream Docker Pulls](https://img.shields.io/docker/pulls/itzcrazykns1337/vane?color=blue&label=upstream%20Docker%20pulls)](https://hub.docker.com/r/itzcrazykns1337/vane)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/bojansandhaus/Vane/blob/main/LICENSE)
+[![GitHub last commit](https://img.shields.io/github/last-commit/bojansandhaus/Vane?color=green)](https://github.com/bojansandhaus/Vane/commits/main)
 [![Discord](https://dcbadge.limes.pink/api/server/26aArMy8tT?style=flat)](https://discord.gg/26aArMy8tT)
 
 Vane is a **privacy-focused AI answering engine** that runs entirely on your own hardware. It combines knowledge from the vast internet with support for **local LLMs** (Ollama) and cloud providers (OpenAI, Claude, Groq), delivering accurate answers with **cited sources** while keeping your searches completely private.
+
+This is an independent fork of Vane, originally created by [@ItzCrazyKns](https://github.com/ItzCrazyKns), and maintained by [@bojansandhaus](https://github.com/bojansandhaus). Fork-specific changes are listed below.
 
 ![preview](.assets/vane-screenshot.png)
 
@@ -20,11 +22,11 @@ Want to know more about its architecture and how it works? You can read it [here
 
 ⚡ **Smart search modes** - Choose Speed Mode when you need quick answers, Balanced Mode for everyday searches, or Quality Mode for deep research.
 
-🧭 **Pick your sources** - Search the web, discussions, or academic papers. More sources and integrations are in progress.
+🧭 **Pick your sources** - Search the web, discussions, or academic papers.
 
 🧩 **Widgets** - Helpful UI cards that show up when relevant, like weather, calculations, stock prices, and other quick lookups.
 
-🔍 **Web search powered by SearxNG** - Access multiple search engines while keeping your identity private. Support for Tavily and Exa coming soon for even better results.
+🔍 **Web search powered by SearxNG** - Access multiple search engines while keeping your identity private.
 
 📷 **Image and video search** - Find visual content alongside text results. Search isn't limited to just articles anymore.
 
@@ -38,7 +40,13 @@ Want to know more about its architecture and how it works? You can read it [here
 
 🕒 **Search history** - Every search is saved locally so you can revisit your discoveries anytime. Your research is never lost.
 
-✨ **More coming soon** - We're actively developing new features based on community feedback. Join our Discord to help shape Vane's future!
+🛠️ **Fork updates** - New chats default to Balanced mode with web, discussions, and academic sources selected. OpenCode provider requests include an `x-opencode-session` header. The library fetches fresh chat data, and a missing chat during reconnection is marked as an error instead of leaving the interface stuck loading.
+
+## Usage
+
+On a fresh app load, the chat controls start in Balanced mode with web, discussions, and academic sources selected. Change the mode or source selection in the chat controls whenever a query needs a narrower search.
+
+For providers using an `opencode.ai` base URL, Vane adds the `x-opencode-session` header automatically. No extra header configuration is required.
 
 ## Sponsors
 
@@ -66,6 +74,8 @@ There are mainly 2 ways of installing Vane - With Docker, Without Docker. Using 
 ### Getting Started with Docker (Recommended)
 
 Vane can be easily run using Docker. Simply run the following command:
+
+The Docker Hub image below is published by the upstream project and does not include this fork's changes. Build from this fork's source, as described under Advanced Setup, to use the fork-specific updates.
 
 ```bash
 docker run -d -p 3000:3000 -v vane-data:/home/vane/data --name vane itzcrazykns1337/vane:latest
@@ -98,7 +108,7 @@ If you prefer to build from source or need more control:
 2. Clone the Vane repository:
 
    ```bash
-   git clone https://github.com/ItzCrazyKns/Vane.git
+   git clone https://github.com/bojansandhaus/Vane.git
    ```
 
 3. After cloning, navigate to the directory containing the project files.
@@ -120,7 +130,7 @@ If you prefer to build from source or need more control:
 2. Clone the repository:
 
    ```bash
-   git clone https://github.com/ItzCrazyKns/Vane.git
+   git clone https://github.com/bojansandhaus/Vane.git
    cd Vane
    ```
 
@@ -217,20 +227,16 @@ Vane runs on Next.js and handles all API requests. It works right away on the sa
 
 ## One-Click Deployment
 
+These third-party buttons launch upstream Vane templates, not this fork's changes. For this fork, use the source build instructions above.
+
 [![Deploy to Sealos](https://raw.githubusercontent.com/labring-actions/templates/main/Deploy-on-Sealos.svg)](https://usw.sealos.io/?openapp=system-template%3FtemplateName%3Dperplexica)
 [![Deploy to RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/?app_id=267)
-[![Run on ClawCloud](https://raw.githubusercontent.com/ClawCloud/Run-Template/refs/heads/main/Run-on-ClawCloud.svg)](https://template.run.claw.cloud/?referralCode=U11MRQ8U9RM4&openapp=system-fastdeploy%3FtemplateName%3Dperplexica)
+
 [![Deploy on Hostinger](https://assets.hostinger.com/vps/deploy.svg)](https://www.hostinger.com/vps/docker-hosting?compose_url=https://raw.githubusercontent.com/ItzCrazyKns/Vane/refs/heads/master/docker-compose.yaml)
-
-## Upcoming Features
-
-- [ ] Adding more widgets, integrations, search sources
-- [ ] Adding ability to create custom agents (name T.B.D.)
-- [ ] Adding authentication
 
 ## Support Us
 
-If you find Vane useful, consider giving us a star on GitHub. This helps more people discover Vane and supports the development of new features. Your support is greatly appreciated.
+If you find this fork useful, consider giving it a star on [GitHub](https://github.com/bojansandhaus/Vane).
 
 ### Donations
 
@@ -243,6 +249,10 @@ We also accept donations to help sustain our project. If you would like to contr
 ## Contribution
 
 Vane is built on the idea that AI and large language models should be easy for everyone to use. If you find bugs or have ideas, please share them in via GitHub Issues. For more information on contributing to Vane you can read the [CONTRIBUTING.md](CONTRIBUTING.md) file to learn more about Vane and how you can contribute to it.
+
+## About
+
+Vane was originally created by [@ItzCrazyKns](https://github.com/ItzCrazyKns). This independent fork and slight adjustment is authored and maintained by [@bojansandhaus](https://github.com/bojansandhaus). Its changes focus on OpenCode session headers, Balanced research defaults, and chat library and reconnection reliability. The fork keeps the upstream project attribution and MIT license.
 
 ## Help and Support
 
